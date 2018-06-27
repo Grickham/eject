@@ -1,0 +1,30 @@
+#ifndef ESTADO_PROGRAMA_H
+#define ESTADO_PROGRAMA_H
+
+enum estadoBtn{
+    ESTADO_STOP,
+    ESTADO_START
+};
+
+enum estadoEjecucion{
+    EJECUCION_EN_PARO,
+    EJECUTANDO_RUTINA
+};
+
+enum puertos{
+    PUERTO_CALIBRACION = 8091,
+    PUERTO_EJECUCION,
+    PUERTO_PARO,
+    PUERTO_IOS = 8095
+};
+
+enum TipoAviso{
+    AVISO_PARO,
+    AVISO_REANUDANDO_ROBOT,
+    AVISO_MOV_ROBOT,
+    AVISO_CARGANDO,
+    AVISO_LIBERAR_PARO
+};
+
+#endif // ESTADO_PROGRAMA_H
+
