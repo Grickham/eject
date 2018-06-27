@@ -569,10 +569,10 @@ void ATModelo::Eject2(){
 
 
     bool inicio =true;
-    int vel=300;
-    int acel=1;
-    int zp=920;
-    int zso = 890;
+    int vel=650;
+    int acel=0.5;
+    int zp=952;
+    int zso = 920;
     int primerpaso=0;
     int memoria;
 
@@ -581,7 +581,8 @@ void ATModelo::Eject2(){
     int c2=0;
     int c3=0;
     random =0;
-    int ze=840; // CUIDADO CUIDADO CUIDADO
+    int ze=870; // CUIDADO CUIDADO CUIDADO
+    int radio=60;
 
     while (prioridad==0){
         sen1=robotEjecucion->statusPinEntrada(5);
@@ -606,8 +607,7 @@ void ATModelo::Eject2(){
             prioridad=3;
         }
         if(getStopReceived()){
-            detenerEjecucion();
-            return;
+           break;
         }
 
     }
@@ -615,60 +615,57 @@ void ATModelo::Eject2(){
 
     switch(prioridad){
     case 1:
-        if(robotEjecucion->setPunto(MOV_LINEAL,-121,19,775,vel) != COMANDO_EJECUTADO){
-            qDebug("aquic1");
+        if(robotEjecucion->setPunto(MOV_LINEAL,-121,16,775,vel) != COMANDO_EJECUTADO){
+
            break;
 
         }
-        if(robotEjecucion->setPunto(MOV_LINEAL,-121,19,zp,vel) != COMANDO_EJECUTADO){
+        if(getStopReceived()){
+           break;
+        }
+        if(robotEjecucion->setPunto(MOV_LINEAL,-121,16,zp,vel) != COMANDO_EJECUTADO){
           break;
         }
         robotEjecucion->salidasActuadorPLC(0,true);
         c1-=1;
         if(getStopReceived()){
-            if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                return;
-            }
-            return;
+           break;
         }
 
         primerpaso=1;
         break;
     case 2:
-        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-53,775,vel) != COMANDO_EJECUTADO){
+        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-51,775,vel) != COMANDO_EJECUTADO){
             break;
 
         }
-        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-53,zp,vel) != COMANDO_EJECUTADO){
+        if(getStopReceived()){
+           break;
+        }
+        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-51,zp,vel) != COMANDO_EJECUTADO){
             break;
         }
         c2-=1;
         robotEjecucion->salidasActuadorPLC(0,true);
         if(getStopReceived()){
-            if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                return;
-            }
-            return;
+           break;
         }
         primerpaso=1;
         break;
     case 3:
-        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-118,775,vel) != COMANDO_EJECUTADO){
+        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-120,775,vel) != COMANDO_EJECUTADO){
             break;
         }
-        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-118,zp,vel) != COMANDO_EJECUTADO){
+        if(getStopReceived()){
+           break;
+        }
+        if(robotEjecucion->setPunto(MOV_LINEAL,-121,-120,zp,vel) != COMANDO_EJECUTADO){
             break;
         }
         c3-=1;
         robotEjecucion->salidasActuadorPLC(0,true);
         if(getStopReceived()){
-            if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                return;
-            }
-            return;
+           break;
         }
         primerpaso=1;
         break;
@@ -711,11 +708,7 @@ qDebug("antes while");
 
 
             if(getStopReceived()){
-                if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                    return;
-                }
-                return;
+               break;
             }
             if(sen1==false && sen2==false && sen3==false){
                 prioridad=0;
@@ -725,8 +718,10 @@ qDebug("antes while");
 
         }while(prioridad==0);
 
-
-        while (primerpaso==1){
+        if(getStopReceived()){
+           break;
+        }
+        if(primerpaso==1){
             if (primerpaso==1){
                 memoria=prioridad;
                 prioridad=0;
@@ -746,48 +741,36 @@ qDebug("antes while");
 
         switch(prioridad){
         case 1:
-            if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,-121,19,zp,vel,40,acel,ze) != COMANDO_EJECUTADO){
- qDebug("aquic1");
+            if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,-121,16,zp,vel,radio,acel,ze) != COMANDO_EJECUTADO){
+
                 break;
             }
             c1-=1;
             robotEjecucion->salidasActuadorPLC(0,true);
             if(getStopReceived()){
-                if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                    return;
-                }
-                return;
+               break;
             }
 
             break;
-        case 2:if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,-121,-53,zp,vel,40,acel,ze) != COMANDO_EJECUTADO){
+        case 2:if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,-121,-51,zp,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                 //detenerEjecucion();
                 break;
             }
             c2-=1;
             robotEjecucion->salidasActuadorPLC(0,true);
             if(getStopReceived()){
-                if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                    return;
-                }
-                return;
+               break;
             }
 
             break;
-        case 3: if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,-121,-118,zp,vel,40,acel,ze) != COMANDO_EJECUTADO){
+        case 3: if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,-121,-120,zp,vel,radio,acel,ze) != COMANDO_EJECUTADO){
 
                 break;
             }
             c3-=1;
             robotEjecucion->salidasActuadorPLC(0,true);
             if(getStopReceived()){
-                if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                    return;
-                }
-                return;
+               break;
             }
         case 0:
             prioridad=memoria;
@@ -796,15 +779,12 @@ qDebug("antes while");
         while (banderaEstadoEjec==true){
             if (prioridad==1 && random==1){
                qDebug("aquir1");
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,245,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,245,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     // banderaEstadoEjec=false; poner bandera de estado para el while oh no o.O
                     break;
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
 
@@ -812,79 +792,59 @@ qDebug("antes while");
 
             else if (prioridad==1 && random==2){
                 qDebug("aquir2");
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,306,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,308,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
 
             else if (prioridad==1 && random==3){
                qDebug("aquir3");
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,371,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,376,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
 
 
             if (prioridad==2 && random==1){
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,245,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,245,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
 
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
 
             else if (prioridad==2 && random==2){
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,306,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,308,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
 
             else if (prioridad==2 && random==3){
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,371,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,376,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
@@ -892,58 +852,52 @@ qDebug("antes while");
 
 
             if (prioridad==3 && random==1){
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,245,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,245,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
                 }
 
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
 
             else if (prioridad==3 && random==2){
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,306,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,308,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
 
             else if (prioridad==3 && random==3){
-                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,371,zso,vel,40,acel,ze) != COMANDO_EJECUTADO){
+                if(robotEjecucion->setPunto(MOV_TRAYECTORIA_U,5,376,zso,vel,radio,acel,ze) != COMANDO_EJECUTADO){
                     banderaEstadoEjec=false;
                     break;
                 }
                 if(getStopReceived()){
-                    if(robotEjecucion->setPunto(MOV_LINEAL,0,0,775,300) != COMANDO_EJECUTADO){
-
-                        return;
-                    }
-                    return;
+                   break;
                 }
                 robotEjecucion->salidasActuadorPLC(0,false);
             }
 
-
+            if(getStopReceived()){
+               break;
+            }
             banderaEstadoEjec=false;
         }
-qDebug("despues while");
+        if(getStopReceived()){
+           break;
+        }
     }
 
-detenerEjecucion();
+    if(getStopReceived()){
+      detenerEjecucion();
+    }
 }
 
 
